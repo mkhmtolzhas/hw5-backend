@@ -26,7 +26,8 @@ class EventController {
         try {
           const page = parseInt(req.query.page as string) || 1;
           const limit = parseInt(req.query.limit as string) || 10;
-          const events = await this.eventService.getEvents(page, limit);
+          const sort = (req.query.sort as string) || 'asc';
+          const events = await this.eventService.getEvents(page, limit, sort);
           res.status(200).json(events);
         } catch (error: any) {
           res.status(500).send({ error: error.message });
@@ -56,11 +57,9 @@ class EventController {
             const user = (req as any).user;
             const userLocation = user.city;
         
-            const allEvents = await this.eventService.getEvents();
+            const allEvents = await this.eventService.getEventByCity(userLocation);
             
-            const userEvents = allEvents.filter(event => event.location === userLocation);
-        
-            res.status(200).json(userEvents);
+            res.status(200).json(allEvents);
         } catch (error: any) {
             res.status(500).send({ error: error.message });
         }

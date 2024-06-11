@@ -10,21 +10,25 @@ class EventService {
         return await EventModel.find({ city: city }).exec();
     }
 
-    async getEvents(page: number = 1, limit: number = 3): Promise<IEvent[]> {
-        const skip = (page - 1) * limit;
-
-        return await EventModel.find().skip(skip).limit(limit).exec();
+    async getEvents(page: number = 1, limit: number = 0, sort: string = 'rating'): Promise<IEvent[]> {
+        let skip;
+        if (limit !== 0 && page !== 1) {
+            skip = (page - 1) * limit;
+        }
+        const sortOrder = sort === 'desc' ? -1 : 1;
+        return await EventModel.find().skip(skip).limit(limit).sort({ rating: sortOrder }).exec();
     }
 
     async createEvent(createEventDto: CreateEventDto): Promise<IEvent> {
-        const { name, description, date, location, duration, city } = createEventDto;
+        const { name, description, date, location, duration, city, rating } = createEventDto;
         const newEvent = new EventModel({
             name,
             description,
             date: new Date(date),
             location,
             duration,
-            city
+            city,
+            rating
         });
 
         await newEvent.save();

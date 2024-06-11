@@ -5,5 +5,6 @@ export interface CreateEventDto {
     location:string;
     duration:string;
     city:string;
+    rating: number;
 }
   
