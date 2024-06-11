@@ -10,8 +10,10 @@ class EventService {
         return await EventModel.find({ city: city }).exec();
     }
 
-    async getEvents(): Promise<IEvent[]> {
-        return await EventModel.find().exec();
+    async getEvents(page: number = 1, limit: number = 3): Promise<IEvent[]> {
+        const skip = (page - 1) * limit;
+
+        return await EventModel.find().skip(skip).limit(limit).exec();
     }
 
     async createEvent(createEventDto: CreateEventDto): Promise<IEvent> {
